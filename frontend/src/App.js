@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./App.css";
 
@@ -6,6 +6,7 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const endOfMessagesRef = useRef(null);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -41,15 +42,19 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+
   return (
     <div className="chat-container">
-      <h2>AI Chatbot</h2>
-      <button 
-        onClick={clearChat} 
-        className="clear-btn"
-      >
-        Clear Chat
-      </button>
+      <div className="chat-header">
+        <h2 className="chat-title">My AI Chat</h2>
+         <button onClick={clearChat} className="clear-btn" title="Clear all messages">
+            Clear Chat
+          </button>
+      </div>
       <div className="chat-box">
         {messages.map((msg, i) => (
         <div key={i} className={`message ${msg.sender}`}>
@@ -61,6 +66,7 @@ function App() {
             <span className="message-bubble">Typing...</span>
           </div>
         )}
+       <div ref={endOfMessagesRef} /> 
       </div>
       <div className="input-row">
         <input
@@ -71,6 +77,7 @@ function App() {
         placeholder="Type a message..."
         />
         <button onClick={sendMessage}>Send</button>
+      
       </div>
     </div>
   );  

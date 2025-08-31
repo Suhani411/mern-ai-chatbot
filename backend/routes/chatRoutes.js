@@ -1,5 +1,5 @@
 import express from "express";
-import { generateAIResponse } from "../ai-service/gemini.js";
+import { generateAIResponse } from "../services/geminiService.js";
 
 const router = express.Router();
 
