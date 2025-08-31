@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./App.css";
+import { Sun, Moon } from "lucide-react";
 
 function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const endOfMessagesRef = useRef(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -46,6 +48,13 @@ function App() {
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, [darkMode]);
 
   return (
     <div className="chat-container">
@@ -54,6 +63,15 @@ function App() {
          <button onClick={clearChat} className="clear-btn" title="Clear all messages">
             Clear Chat
           </button>
+      <div className="theme-toggle">
+        <button 
+          onClick={() => setDarkMode(!darkMode)} 
+          className="theme-btn"
+          title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        >
+          {darkMode ? <Sun size={22} /> : <Moon size={22} />}
+        </button>
+      </div>
       </div>
       <div className="chat-box">
         {messages.map((msg, i) => (
