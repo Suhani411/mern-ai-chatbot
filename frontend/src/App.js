@@ -10,6 +10,8 @@ function App() {
   const endOfMessagesRef = useRef(null);
   const [darkMode, setDarkMode] = useState(false);
 
+  const MAX_CHAR_LIMIT = 200;
+
   const sendMessage = async () => {
     if (!input.trim()) return;
 
@@ -93,10 +95,21 @@ function App() {
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyPress}
         placeholder="Type a message..."
+        maxLength={MAX_CHAR_LIMIT + 1}
         />
-        <button onClick={sendMessage}>Send</button>
-      
+        <button 
+          onClick={sendMessage} 
+          disabled={!input.trim() || input.length > MAX_CHAR_LIMIT}
+        >
+          Send
+        </button>
       </div>
+<div className={`char-counter ${input.length > MAX_CHAR_LIMIT ? "warning" : ""}`}>
+  {input.length}/{MAX_CHAR_LIMIT}
+  {input.length > MAX_CHAR_LIMIT && (
+    <span className="warning-text"> - Limit exceeded!</span>
+  )}
+</div>
     </div>
   );  
 }

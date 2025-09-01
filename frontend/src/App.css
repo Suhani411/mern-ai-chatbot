@@ -207,3 +207,15 @@ body.dark-mode .bot .message-bubble {
 .dark-mode .theme-btn:hover {
   background: rgba(255,255,255,0.1);
 }
+
+.char-counter {
+  font-size: 12px;
+  text-align: right;
+  margin-top: 4px;
+  color: #888; 
+}
+
+.char-counter.warning {
+  color: red;
+  font-weight: 500;
+}
