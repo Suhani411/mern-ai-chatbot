@@ -4,18 +4,25 @@ import "./App.css";
 import { Sun, Moon } from "lucide-react";
 
 function App() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(() => {
+    const saved = localStorage.getItem("chatMessages");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const endOfMessagesRef = useRef(null);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem("darkMode");
+    return saved ? JSON.parse(saved) : false;
+  });
 
   const MAX_CHAR_LIMIT = 200;
 
   const sendMessage = async () => {
     if (!input.trim()) return;
 
-    setMessages([...messages, { sender: "user", text: input }]);
+    const newMessages = [...messages, { sender: "user", text: input }];
+    setMessages(newMessages);
     setLoading(true);
 
     try {
@@ -43,8 +50,13 @@ function App() {
   const clearChat = () => {
     if (window.confirm("Are you sure you want to clear the chat?")) {
       setMessages([]);
+      localStorage.removeItem("chatMessages");
     }
   };
+ 
+    useEffect(() => {
+    localStorage.setItem("chatMessages", JSON.stringify(messages));
+  }, [messages]);
 
   useEffect(() => {
     endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -56,6 +68,7 @@ function App() {
     } else {
       document.body.classList.remove("dark-mode");
     }
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
   }, [darkMode]);
 
   return (
@@ -104,12 +117,12 @@ function App() {
           Send
         </button>
       </div>
-<div className={`char-counter ${input.length > MAX_CHAR_LIMIT ? "warning" : ""}`}>
-  {input.length}/{MAX_CHAR_LIMIT}
-  {input.length > MAX_CHAR_LIMIT && (
-    <span className="warning-text"> - Limit exceeded!</span>
-  )}
-</div>
+      <div className={`char-counter ${input.length > MAX_CHAR_LIMIT ? "warning" : ""}`}>
+        {input.length}/{MAX_CHAR_LIMIT}
+        {input.length > MAX_CHAR_LIMIT && (
+          <span className="warning-text"> - Limit exceeded!</span>
+        )}
+      </div>
     </div>
   );  
 }
